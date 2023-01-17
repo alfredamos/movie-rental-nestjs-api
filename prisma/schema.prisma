@@ -1,0 +1,65 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model Customer {
+  @@map("customers")
+  id String @id @default(uuid())
+  name String @db.VarChar(255)
+  email String @unique @db.VarChar(255)
+  phone String @db.VarChar(255)
+  password String @db.VarChar(255)
+  gender Gender @default(Male)
+  userType UserType @default(Customer)
+  isGold Boolean @default(false)
+  rentals Rental[]
+}
+
+model Genre {
+  @@map("genres")
+  id String @id @default(uuid())
+  name String @db.VarChar(255)
+  movies Movie[]
+}
+
+model Movie {
+  @@map("movies")
+  id String @id @default(uuid())
+  title String @db.VarChar(255)
+  genre Genre @relation(fields: [genreId], references: [id])
+  genreId String 
+  numberInStock Int
+  dailyRentalRate Decimal
+  rentals Rental[]
+}
+
+model Rental {
+  @@map("rentals")
+  id String @id @default(uuid())
+  customer Customer @relation(fields: [customerId], references: [id])
+  customerId String
+  movie Movie @relation(fields: [movieId], references: [id])
+  movieId String 
+  dateOut DateTime @default(now())
+  dateReturn DateTime?
+  rentalFee Decimal
+}
+
+enum Gender {
+  Female
+  Male
+}
+
+
+enum UserType{
+  Admin
+  Customer
+}
