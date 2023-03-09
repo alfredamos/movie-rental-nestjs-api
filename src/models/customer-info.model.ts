@@ -6,4 +6,5 @@ export class CustomerInfo{
     userType!: UserType;
     message?: string;
     token?: string;
+    isLoggedIn?: boolean;
 }

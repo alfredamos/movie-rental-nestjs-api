@@ -9,11 +9,14 @@ export class RentalService {
   constructor(private repo: PrismaService) {}
 
   async create(createRentalDto: CreateRentalDto): Promise<Rental> {
+
+    delete createRentalDto.dateReturn;
+    
     if (!createRentalDto) {
       throw new BadRequestException('Invalid request');
     }
     return await this.repo.rental.create({
-      data: createRentalDto,
+      data: {...createRentalDto},
     });
   }
 
@@ -55,7 +58,7 @@ export class RentalService {
 
     return await this.repo.rental.update({
       where: { id },
-      data: updateRentalDto,
+      data: {...updateRentalDto},
     });
   }
 

@@ -10,30 +10,31 @@ import { APP_GUARD } from '@nestjs/core';
 import { JwtAuthGuard } from './guards/jwt.guard';
 import { RolesGuard } from './guards/roles.guard';
 import { UtilsModule } from './utils/utils.module';
+import { CanModifyGuard } from './guards/can-modify.guard';
 
 @Module({
   imports: [
-    CustomerModule, 
-    GenreModule, 
-    MovieModule, 
-    RentalModule, 
+    CustomerModule,
+    GenreModule,
+    MovieModule,
+    RentalModule,
     PrismaModule,
     ConfigModule.forRoot({
-      isGlobal: true
+      isGlobal: true,
     }),
     AuthModule,
-    UtilsModule
-  ],  
+    UtilsModule,
+  ],
   providers: [
     {
       provide: APP_GUARD,
-      useClass: JwtAuthGuard
+      useClass: JwtAuthGuard,
     },
     {
       provide: APP_GUARD,
-      useClass: RolesGuard
-    }
-  ]
-
+      useClass: RolesGuard,
+    },
+    CanModifyGuard
+  ],
 })
 export class AppModule {}

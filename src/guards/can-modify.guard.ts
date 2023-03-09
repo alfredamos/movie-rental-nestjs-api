@@ -3,11 +3,12 @@ import { PrismaService } from "src/prisma/prisma.service";
 import { UserType } from "@prisma/client";
 import { CustomerInfo } from "src/models/customer-info.model";
 import {UuidTool} from "uuid-tool"
+import { Customer } from '../utils/dto/customer.dto';
+import { CustomerService } from '../customer/customer.service';
 
 @Injectable()
 export class CanModifyGuard implements CanActivate{
-    constructor(       
-        private prisma: PrismaService){}
+    constructor(private prisma: PrismaService){}
 
     async canActivate(context: ExecutionContext): Promise<boolean>{       
         const request = context.switchToHttp().getRequest();
@@ -16,11 +17,13 @@ export class CanModifyGuard implements CanActivate{
 
         const rental = await this.prisma.rental.findUnique({
            where: {id}, 
-        })
+        });
 
+        console.log({rental});
+        
         if(!rental){
             throw new BadRequestException("There is no rental.");
-        }
+        }  
         
         const customerInfo: CustomerInfo = request.user;
 
@@ -32,8 +35,9 @@ export class CanModifyGuard implements CanActivate{
         const customerIdFromRental = rental?.customerId;
 
         const isEqual = UuidTool.compare(customerIdFromCustomerInfo, customerIdFromRental);
-        
-        if(isEqual || customerInfo?.userType === UserType.Admin){
+        const isAdmin = customerInfo?.userType === UserType.Admin;
+
+        if(isEqual || isAdmin){
             return true;
         }       
 

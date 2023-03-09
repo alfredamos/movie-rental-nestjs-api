@@ -14,13 +14,13 @@ export class GenreController {
     return this.genreService.create(createGenreDto);
   }
 
-  @Roles('Admin')
+  @Roles('Admin', 'Customer')
   @Get()
   findAll() {
     return this.genreService.findAll();
   }
 
-  @Roles('Admin')
+  @Roles('Admin', 'Customer')
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.genreService.findOne(id);

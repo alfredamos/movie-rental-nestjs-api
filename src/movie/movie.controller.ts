@@ -6,7 +6,7 @@ import { Roles } from 'src/decorators/roles.decorator';
 
 @Controller('movies')
 export class MovieController {
-  constructor(private readonly movieService: MovieService) {}
+  constructor(private movieService: MovieService) {}
 
   @Roles('Admin')
   @Post()
@@ -17,7 +17,7 @@ export class MovieController {
   @Roles('Admin', 'Customer')
   @Get()
   findAll() {
-    return this.movieService.findAll();
+    return this.movieService.findAll();    
   }
 
   @Roles('Admin', 'Customer')

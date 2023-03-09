@@ -10,7 +10,8 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model Customer {
+
+ model Customer {
   @@map("customers")
   id String @id @default(uuid())
   name String @db.VarChar(255)

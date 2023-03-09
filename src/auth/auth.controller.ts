@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Post, Body, Patch, Param, Delete } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { ChangePasswordDto } from './dto/change-password.dto';
 import { ChangeProfileDto } from './dto/change-profile.dto';
@@ -16,11 +16,12 @@ export class AuthController {
     return this.authService.changePassword(changePasswordDto);
   }
 
-  @Patch('profile')
+  @Patch('edit-profile')
   editProfile(@Body() changeProfileDto: ChangeProfileDto) {
     return this.authService.editProfile(changeProfileDto);
   }
 
+  
   @Post('login')
   login(@Body() loginDto: LoginDto) {
     return this.authService.login(loginDto);
@@ -32,3 +33,7 @@ export class AuthController {
   }
 
 }
+function CurrentCustomer(): (target: AuthController, propertyKey: "getCurrentUser", parameterIndex: 0) => void {
+  throw new Error('Function not implemented.');
+}
+
