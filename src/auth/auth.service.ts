@@ -1,5 +1,9 @@
-import { CurrentUser } from "./../decorators/current-user.decorator";
-import { ForbiddenException, Injectable, BadRequestException } from '@nestjs/common';
+import { CurrentUser } from './../decorators/current-user.decorator';
+import {
+  ForbiddenException,
+  Injectable,
+  BadRequestException,
+} from '@nestjs/common';
 import { ChangePasswordDto } from './dto/change-password.dto';
 import { ChangeProfileDto } from './dto/change-profile.dto';
 import { SignupDto } from './dto/signup.dto';
@@ -9,7 +13,7 @@ import * as bcrypt from 'bcrypt';
 import { JwtService } from '@nestjs/jwt';
 import { CustomerInfo } from '../models/customer-info.model';
 import { Observable } from 'rxjs';
-import { CurrentUserDto } from "./dto/current-user.dto";
+import { CurrentUserDto } from './dto/current-user.dto';
 
 @Injectable()
 export class AuthService {
@@ -111,7 +115,7 @@ export class AuthService {
       name: updatedCustomerProfile.name,
       userType: updatedCustomerProfile.userType,
       message: 'Profile updated successfully',
-      isLoggedIn: true
+      isLoggedIn: true,
     };
   }
 
@@ -136,12 +140,13 @@ export class AuthService {
       throw new ForbiddenException('Invalid credentials');
     }
 
+    delete customer.password;
     //----> Customer payload as input for jwt.
     const customerPayload: CustomerInfo = {
       id: customer.id,
       name: customer.name,
       userType: customer.userType,
-      isLoggedIn: true
+      isLoggedIn: true,
     };
 
     //----> Get jwt token
@@ -152,6 +157,7 @@ export class AuthService {
       ...customerPayload,
       message: 'Login is successful',
       token,
+      user: customer
     };
   }
 
@@ -175,7 +181,7 @@ export class AuthService {
 
     if (customer) {
       throw new BadRequestException('Email already exists');
-    }    
+    }
 
     //----> Hash the password.
     const hashPassword = await bcrypt.hash(password, 12);
@@ -191,7 +197,7 @@ export class AuthService {
       name: newCustomer.name,
       userType: newCustomer.userType,
       message: 'Signup is successful.',
-      isLoggedIn: true
+      isLoggedIn: true,
     };
   }
 }

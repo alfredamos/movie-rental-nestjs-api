@@ -1,22 +1,26 @@
-import { Injectable, BadRequestException, NotFoundException } from '@nestjs/common';
+import {
+  Injectable,
+  BadRequestException,
+  NotFoundException,
+} from '@nestjs/common';
 import { CreateRentalDto } from './dto/create-rental.dto';
 import { UpdateRentalDto } from './dto/update-rental.dto';
 import { PrismaService } from '../prisma/prisma.service';
 import { Rental } from '@prisma/client';
+import { log } from 'console';
 
 @Injectable()
 export class RentalService {
   constructor(private repo: PrismaService) {}
 
   async create(createRentalDto: CreateRentalDto): Promise<Rental> {
-
     delete createRentalDto.dateReturn;
-    
+
     if (!createRentalDto) {
       throw new BadRequestException('Invalid request');
     }
     return await this.repo.rental.create({
-      data: {...createRentalDto},
+      data: { ...createRentalDto },
     });
   }
 
@@ -28,8 +32,6 @@ export class RentalService {
       },
     });
   }
-
-  
 
   async findOne(id: string) {
     const rental = await this.repo.rental.findUnique({
@@ -56,9 +58,13 @@ export class RentalService {
       throw new NotFoundException(`Rental with id = ${id} is not found.`);
     }
 
+    const weeks = 2;
+
+    updateRentalDto.dateReturn = this.addWeeks(new Date(), weeks);
+
     return await this.repo.rental.update({
       where: { id },
-      data: {...updateRentalDto},
+      data: { ...updateRentalDto },
     });
   }
 
@@ -74,5 +80,10 @@ export class RentalService {
     return await this.repo.rental.delete({
       where: { id },
     });
+  }
+
+  private addWeeks(date, weeks) {
+    date.setDate(date.getDate() + 7 * weeks);
+    return date;
   }
 }
